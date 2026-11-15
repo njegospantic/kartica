@@ -1,0 +1,260 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kartica oglasa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap">
+<style>
+/* Layout: obrazac lijevo, kartica uživo desno (sticky); na telefonu jedno ispod drugog. */
+:root{
+  --bg:#F4F7FC; --card:#FFFFFF; --ink:#0F1B33; --muted:#5B6882; --line:#DCE3F0;
+  --brand:#2563EB; --brand-ink:#FFFFFF; --warn:#B45309; --ok:#047857; --stage:#E6ECF7;
+  --shadow:0 1px 2px rgba(15,27,51,.06),0 8px 24px rgba(15,27,51,.06);
+  --ui:'Plus Jakarta Sans',system-ui,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1220; --card:#121B2F; --ink:#E7EDF9; --muted:#9AA8C4; --line:#24324D;
+  --brand:#5B8DEF; --brand-ink:#0B1220; --warn:#FBBF24; --ok:#34D399; --stage:#0E1729;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1220; --card:#121B2F; --ink:#E7EDF9; --muted:#9AA8C4; --line:#24324D;
+  --brand:#5B8DEF; --brand-ink:#0B1220; --warn:#FBBF24; --ok:#34D399; --stage:#0E1729;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1280px;margin:0 auto}
+header{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);width:max-content}
+.brand b{font-size:22px;font-weight:800;letter-spacing:-.5px}.brand b i{font-style:normal;color:var(--brand)}
+h1{margin:0;font-size:clamp(28px,4.4vw,44px);line-height:1.08;font-weight:800;letter-spacing:-.8px;text-wrap:balance;max-width:20ch}
+.lead{margin:0;color:var(--muted);max-width:62ch;font-size:17px}
+.grid{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2{margin:0 0 14px;font-size:18px;font-weight:800;letter-spacing:-.2px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+@media (max-width:520px){.fields{grid-template-columns:minmax(0,1fr)}}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}.f.full{grid-column:1/-1}
+label,.lbl{font-size:13px;font-weight:700;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{
+  font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:120px;font-size:14.5px}
+input[type=range]{width:100%;accent-color:var(--brand)}
+input[type=file]{font:inherit;font-size:14px;color:var(--muted);width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:100%;flex-wrap:wrap}
+.seg label{margin:0;padding:9px 14px;cursor:pointer;font-size:14px;color:var(--ink);background:var(--bg)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--brand);color:var(--brand-ink);font-weight:800}
+.seg label:has(input:focus-visible){outline:3px solid var(--brand);outline-offset:-3px}
+.chk{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--ink)}
+.chk input{width:18px;height:18px;accent-color:var(--brand)}
+.hint{font-size:12.5px;color:var(--muted);font-weight:500;margin:0}
+.btn{font:inherit;font-weight:800;font-size:16px;border:0;border-radius:12px;padding:13px 20px;cursor:pointer;background:var(--brand);color:var(--brand-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:hover{filter:brightness(1.06)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.status{font-size:14px;font-weight:700;min-height:20px;margin:10px 0 0}
+.status.warn{color:var(--warn)}.status.ok{color:var(--ok)}
+.sticky{position:sticky;top:12px;min-width:0}
+@media (max-width:980px){.sticky{position:static}}
+.stage{background:var(--stage);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;justify-content:center;margin-bottom:12px}
+#cv{display:block;height:auto;width:min(100%,calc((100vh - 220px) * var(--r,.8)));border-radius:8px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+@media (max-width:980px){#cv{width:100%}}
+.cta{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;background:var(--brand);color:var(--brand-ink);border-radius:16px;padding:20px 22px;margin-top:8px}
+.cta p{margin:0;font-weight:800;font-size:18px}.cta a{color:var(--brand-ink);font-weight:800;background:rgba(255,255,255,.18);padding:10px 16px;border-radius:10px;text-decoration:none}
+.foot{margin-top:18px;font-size:13px;color:var(--muted);max-width:90ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <a class="brand" href="https://autobih.ba" target="_blank" rel="noopener">
+    <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#2563EB"/><g stroke="#fff" stroke-width="4.4" stroke-linecap="round"><path d="M19 10L10 38"/><path d="M29 10L38 38"/></g><path d="M24 12v26" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="4 5.5"/></svg>
+    <b>autobih<i>.ba</i></b>
+  </a>
+  <h1>Kartica oglasa za društvene mreže</h1>
+  <p class="lead">Dodaj sliku auta i osnovne podatke, a kartica sa logom i cijenom je spremna za Instagram i Facebook. Slika se obrađuje u tvom pregledniku i ne šalje se nigdje.</p>
+</header>
+
+<div class="grid">
+  <form id="form" autocomplete="off" novalidate>
+    <section class="card"><h2>Slika auta</h2>
+      <div class="fields">
+        <div class="f full"><label for="photo">Fotografija (JPG ili PNG, najbolje vodoravna)</label><input type="file" id="photo" accept="image/*"></div>
+        <div class="f"><label for="zoom">Uvećanje</label><input type="range" id="zoom" data-k="zoom" min="1" max="2.5" step="0.01" value="1"></div>
+        <div class="f"><label for="fx">Pomjeri lijevo / desno</label><input type="range" id="fx" data-k="fx" min="0" max="100" step="1" value="50"></div>
+        <div class="f"><label for="fy">Pomjeri gore / dolje</label><input type="range" id="fy" data-k="fy" min="0" max="100" step="1" value="50"></div>
+        <div class="f"><span class="lbl">&nbsp;</span><button type="button" class="btn ghost" data-act="rmphoto">Ukloni sliku</button></div>
+      </div>
+      <p class="hint" style="margin-top:10px">Tablice na slici zaklonite prije objave, ako nisu tvoje.</p>
+    </section>
+    <section class="card"><h2>Podaci o autu</h2>
+      <div class="fields">
+        <div class="f full"><label for="naziv">Naziv auta</label><input type="text" id="naziv" data-k="naziv" placeholder="npr. Volkswagen Golf 7 1.6 TDI"></div>
+        <div class="f"><label for="god">Godište</label><input type="text" id="god" data-k="god" inputmode="numeric"></div>
+        <div class="f"><label for="km">Kilometraža (km)</label><input type="text" id="km" data-k="km" inputmode="numeric"></div>
+        <div class="f"><label for="gorivo">Gorivo</label><select id="gorivo" data-k="gorivo"><option value="">—</option><option>Dizel</option><option>Benzin</option><option>Benzin + plin</option><option>Hibrid</option><option>Električni</option></select></div>
+        <div class="f"><label for="mjenjac">Mjenjač</label><select id="mjenjac" data-k="mjenjac"><option value="">—</option><option>Manuelni</option><option>Automatik</option></select></div>
+        <div class="f"><label for="snaga">Snaga (kW)</label><input type="text" id="snaga" data-k="snaga" inputmode="numeric"></div>
+        <div class="f"><label for="cijena">Cijena (KM)</label><input type="text" id="cijena" data-k="cijena" inputmode="numeric" placeholder="prazno = po dogovoru"></div>
+        <div class="f"><label for="grad">Grad</label><input type="text" id="grad" data-k="grad"></div>
+        <div class="f"><label for="tel">Telefon</label><input type="text" id="tel" data-k="tel"></div>
+        <div class="f full"><label for="ribbon">Oznaka u uglu (nije obavezna)</label><input type="text" id="ribbon" data-k="ribbon" maxlength="14" placeholder="npr. NOVO, HITNO, SNIŽENO"></div>
+      </div>
+    </section>
+    <section class="card"><h2>Izgled</h2>
+      <div class="fields">
+        <div class="f full"><span class="lbl">Stil</span><div class="seg" role="radiogroup" aria-label="Stil kartice">
+          <label><input type="radio" name="tpl" data-k="tpl" value="prelaz" checked>Slika preko cijele kartice</label>
+          <label><input type="radio" name="tpl" data-k="tpl" value="okvir">Plavi okvir</label></div></div>
+        <div class="f full"><span class="lbl">Format</span><div class="seg" role="radiogroup" aria-label="Format kartice">
+          <label><input type="radio" name="fmt" data-k="fmt" value="45" checked>Objava 4:5</label>
+          <label><input type="radio" name="fmt" data-k="fmt" value="11">Kvadrat 1:1</label>
+          <label><input type="radio" name="fmt" data-k="fmt" value="916">Story 9:16</label></div></div>
+        <div class="f full"><label class="chk"><input type="checkbox" data-k="qrOn" checked>Dodaj QR kod</label></div>
+        <div class="f full" id="qrrow"><label for="qrUrl">Link u QR kodu (oglas ili autobih.ba)</label><input type="text" id="qrUrl" data-k="qrUrl" value="https://autobih.ba"></div>
+      </div>
+    </section>
+    <section class="card"><h2>Opis za objavu</h2>
+      <div class="f"><label for="caption">Tekst za Instagram i Facebook (možeš ga mijenjati)</label><textarea id="caption"></textarea></div>
+      <div class="actions" style="margin-top:12px"><button type="button" class="btn ghost" data-act="copycap">Kopiraj opis</button><button type="button" class="btn ghost" data-act="resetcap">Napravi ponovo iz podataka</button></div>
+    </section>
+  </form>
+
+  <section class="sticky" aria-label="Pregled kartice">
+    <div class="stage"><canvas id="cv" width="1080" height="1350" role="img" aria-label="Pregled kartice oglasa"></canvas></div>
+    <div class="actions"><button type="button" class="btn" data-act="png">Preuzmi sliku (PNG)</button></div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </section>
+</div>
+
+<div class="cta"><p>Imaš auto na prodaju? Objavi oglas besplatno.</p><a href="https://autobih.ba" target="_blank" rel="noopener">autobih.ba</a></div>
+<p class="foot">Kartica se pravi na tvom uređaju. Koristi samo fotografije koje imaš pravo objaviti.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+const S={naziv:'Audi A4 2.0 TDI',god:'2010',km:'215000',gorivo:'Dizel',mjenjac:'Manuelni',snaga:'105',cijena:'12500',grad:'Zvornik',tel:'+387 66 735 656',ribbon:'',
+  tpl:'prelaz',fmt:'45',qrOn:true,qrUrl:'https://autobih.ba',zoom:1,fx:50,fy:50};
+let IMG=null,capEdited=false;
+const DIM={'45':[1080,1350],'11':[1080,1080],'916':[1080,1920]};
+const FONT='"Plus Jakarta Sans",system-ui,Arial,sans-serif';
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const fnum=s=>{const d=String(s||'').replace(/\D/g,'');return d?Number(d).toLocaleString('de-DE'):''};
+
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function cover(img,x,y,w,h,r){ctx.save();if(r){rr(x,y,w,h,r);ctx.clip()}else{ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip()}
+  const sc=Math.max(w/img.width,h/img.height)*S.zoom,dw=img.width*sc,dh=img.height*sc;
+  ctx.drawImage(img,x+(w-dw)*S.fx/100,y+(h-dh)*S.fy/100,dw,dh);ctx.restore()}
+function logoWidth(size,fs){ctx.font=`800 ${fs}px ${FONT}`;return size+16+ctx.measureText('autobih.ba').width}
+function logo(x,y,size,white){const s=size/48;ctx.save();ctx.translate(x,y);
+  ctx.fillStyle=white?'#FFFFFF':'#2563EB';rr(0,0,size,size,11*s);ctx.fill();
+  ctx.strokeStyle=white?'#2563EB':'#FFFFFF';ctx.lineCap='round';ctx.lineWidth=4.4*s;ctx.beginPath();ctx.moveTo(19*s,10*s);ctx.lineTo(10*s,38*s);ctx.moveTo(29*s,10*s);ctx.lineTo(38*s,38*s);ctx.stroke();
+  ctx.lineWidth=3.6*s;ctx.setLineDash([4*s,5.5*s]);ctx.beginPath();ctx.moveTo(24*s,12*s);ctx.lineTo(24*s,38*s);ctx.stroke();ctx.setLineDash([]);ctx.restore()}
+function wordmark(x,baseY,fs,mainColor,accent){ctx.textBaseline='alphabetic';ctx.font=`800 ${fs}px ${FONT}`;ctx.fillStyle=mainColor;ctx.fillText('autobih',x,baseY);
+  const w=ctx.measureText('autobih').width;ctx.fillStyle=accent;ctx.fillText('.ba',x+w,baseY)}
+function wrap(text,maxW){const words=text.split(/\s+/).filter(Boolean),lines=[];let cur='';
+  for(const w of words){const t=cur?cur+' '+w:w;if(ctx.measureText(t).width<=maxW||!cur)cur=t;else{lines.push(cur);cur=w}}if(cur)lines.push(cur);return lines}
+function placeholder(x,y,w,h,r){const g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#1E3A8A');g.addColorStop(1,'#2563EB');ctx.save();if(r){rr(x,y,w,h,r);ctx.clip()}
+  ctx.fillStyle=g;ctx.fillRect(x,y,w,h);ctx.fillStyle='rgba(255,255,255,.85)';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${Math.round(w*.04)}px ${FONT}`;
+  ctx.fillText('Dodaj sliku auta',x+w/2,y+h/2);ctx.restore();ctx.textAlign='left'}
+
+/* donji blok: naziv, oznake, cijena, kontakt; vraća visinu i funkciju crtanja */
+function bottomBlock(W,P,maxW,priceBadge){
+  const naziv=(S.naziv||'').trim()||'Marka i model';
+  let fs=84,lines;for(;fs>=48;fs-=4){ctx.font=`800 ${fs}px ${FONT}`;lines=wrap(naziv,maxW);if(lines.length<=2)break}
+  if(lines.length>2){lines=lines.slice(0,2)}
+  const tH=lines.length*fs*1.08;
+  const items=[S.god,S.km?fnum(S.km)+' km':'',S.gorivo,S.mjenjac,S.snaga?S.snaga+' kW':''].map(s=>(s||'').toString().trim()).filter(Boolean);
+  const cfs=34,ch=cfs*1.9,rows=[];let row=[],rw=0;ctx.font=`700 ${cfs}px ${FONT}`;
+  for(const t of items){const w=ctx.measureText(t).width+44;if(rw+w>maxW&&row.length){rows.push(row);row=[];rw=0}row.push({t,w});rw+=w+14}
+  if(row.length)rows.push(row);
+  const cH=rows.length?rows.length*(ch+12)-12:0;
+  const price=S.cijena.trim()?fnum(S.cijena):'';const pfs=104;
+  const pH=pfs*1.05+(priceBadge?36:0);
+  const contact=[(S.tel||'').trim(),(S.grad||'').trim()].filter(Boolean);const fH=contact.length?46*1.2:0;
+  const gaps=[tH?22:0,cH?28:0,fH?26:0];
+  const total=tH+(cH?22+cH:0)+28+pH+(fH?26+fH:0);
+  const draw=(top,col)=>{let y=top;ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.font=`800 ${fs}px ${FONT}`;ctx.fillStyle='#FFFFFF';lines.forEach((l,i)=>ctx.fillText(l,P,y+i*fs*1.08));y+=tH;
+    if(cH){y+=22;ctx.font=`700 ${cfs}px ${FONT}`;rows.forEach(r=>{let x=P;r.forEach(c=>{ctx.fillStyle='rgba(255,255,255,.18)';rr(x,y,c.w,ch,ch/2);ctx.fill();ctx.fillStyle='#FFFFFF';ctx.textBaseline='middle';ctx.fillText(c.t,x+22,y+ch/2+2);x+=c.w+14});ctx.textBaseline='top';y+=ch+12});y-=12;y+=0}
+    y+=28;
+    if(priceBadge){const txt=price?price:'Po dogovoru';ctx.font=`800 ${pfs*0.86}px ${FONT}`;const tw=ctx.measureText(txt).width;
+      let kw=0;if(price){ctx.font=`800 ${pfs*0.5}px ${FONT}`;kw=ctx.measureText(' KM').width}
+      const bw=tw+kw+64,bh=pfs*1.05+36-0;ctx.fillStyle='#FFFFFF';rr(P,y,bw,pfs*1.05+36,28);ctx.fill();ctx.fillStyle='#1D4ED8';ctx.textBaseline='alphabetic';
+      const by=y+(pfs*1.05+36)/2+pfs*0.3;ctx.font=`800 ${pfs*0.86}px ${FONT}`;ctx.fillText(txt,P+32,by);if(price){ctx.font=`800 ${pfs*0.5}px ${FONT}`;ctx.fillText(' KM',P+32+tw,by)}ctx.textBaseline='top';y+=pfs*1.05+36}
+    else{const txt=price?price:'Po dogovoru';ctx.textBaseline='alphabetic';ctx.font=`800 ${pfs}px ${FONT}`;ctx.fillStyle='#FFFFFF';const base=y+pfs*0.86;ctx.fillText(txt,P,base);
+      if(price){const tw=ctx.measureText(txt).width;ctx.font=`800 ${pfs*0.5}px ${FONT}`;ctx.fillStyle='#93C5FD';ctx.fillText(' KM',P+tw,base)}ctx.textBaseline='top';y+=pfs*1.05}
+    if(fH){y+=26;ctx.textBaseline='top';ctx.font=`800 46px ${FONT}`;ctx.fillStyle='#FFFFFF';let x=P;
+      if(contact[0]&&S.tel.trim()){ctx.fillText(contact[0],x,y);x+=ctx.measureText(contact[0]).width}
+      if(S.grad.trim()){const g=(S.tel.trim()?'  ·  ':'')+S.grad.trim();ctx.font=`700 40px ${FONT}`;ctx.fillStyle='#BFDBFE';ctx.fillText(g,x,y+3)}}
+  };
+  return {total,draw}}
+function drawQR(x,y,box){if(typeof qrcode==='undefined')return;const url=(S.qrUrl||'').trim()||'https://autobih.ba';
+  let q;try{q=qrcode(0,'M');q.addData(url);q.make()}catch(e){return}
+  ctx.fillStyle='#FFFFFF';rr(x,y,box,box,24);ctx.fill();const n=q.getModuleCount(),pad=Math.round(box*0.13),cell=Math.floor((box-2*pad)/n),off=(box-cell*n)/2;
+  ctx.fillStyle='#0F1B33';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))ctx.fillRect(x+off+c*cell,y+off+r*cell,cell,cell)}
+function ribbon(x2,y,white){const t=(S.ribbon||'').trim().toUpperCase();if(!t)return;ctx.font=`800 38px ${FONT}`;const w=ctx.measureText(t).width+56,h=68;
+  ctx.fillStyle=white?'#FFFFFF':'#2563EB';rr(x2-w,y,w,h,h/2);ctx.fill();ctx.fillStyle=white?'#1D4ED8':'#FFFFFF';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(t,x2-w+28,y+h/2+2)}
+
+function draw(){
+  const [W,H]=DIM[S.fmt];if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
+  cv.style.setProperty('--r',W/H);ctx.clearRect(0,0,W,H);const P=56;
+  const qrBox=S.qrOn&&typeof qrcode!=='undefined'?236:0;const maxW=W-2*P-(qrBox?qrBox+28:0);
+  if(S.tpl==='okvir'){
+    ctx.fillStyle='#2563EB';ctx.fillRect(0,0,W,H);
+    const bb=bottomBlock(W,P,maxW,true);const top=H-P-bb.total;
+    logo(P,P,76,true);wordmark(P+76+16,P+56,48,'#FFFFFF','#BFDBFE');ribbon(W-P,P+4,true);
+    const py=P+76+30,ph=Math.max(120,top-30-py);
+    if(IMG)cover(IMG,P,py,W-2*P,ph,36);else placeholder(P,py,W-2*P,ph,36);
+    bb.draw(top);if(qrBox)drawQR(W-P-qrBox,H-P-qrBox,qrBox)}
+  else{
+    if(IMG)cover(IMG,0,0,W,H,0);else placeholder(0,0,W,H,0);
+    let g=ctx.createLinearGradient(0,0,0,300);g.addColorStop(0,'rgba(0,0,0,.45)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,300);
+    const bb=bottomBlock(W,P,maxW,false);const top=H-P-bb.total;
+    g=ctx.createLinearGradient(0,top-260,0,H);g.addColorStop(0,'rgba(8,15,35,0)');g.addColorStop(.45,'rgba(8,15,35,.82)');g.addColorStop(1,'rgba(8,15,35,.96)');ctx.fillStyle=g;ctx.fillRect(0,top-260,W,H-(top-260));
+    const lw=logoWidth(52,40)+56,lh=84;ctx.fillStyle='#FFFFFF';rr(P,P,lw,lh,22);ctx.fill();logo(P+16,P+16,52,false);wordmark(P+16+52+16,P+16+40,40,'#0F1B33','#2563EB');
+    ribbon(W-P,P+8,false);bb.draw(top);if(qrBox)drawQR(W-P-qrBox,H-P-qrBox,qrBox)}
+  updateCaption()}
+let pending=false;const redraw=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;draw()})};
+
+/* opis za objavu */
+function makeCaption(){const n=(S.naziv||'').trim()||'Automobil';const bits=[];
+  if(S.god)bits.push(S.god+'. godište');if(S.km)bits.push(fnum(S.km)+' km');if(S.gorivo)bits.push(S.gorivo.toLowerCase());if(S.mjenjac)bits.push(S.mjenjac.toLowerCase()+' mjenjač');if(S.snaga)bits.push(S.snaga+' kW');
+  const L=[`🚗 ${n}`];if(bits.length)L.push(bits.join(' • '));L.push('');
+  L.push(S.cijena.trim()?`💰 Cijena: ${fnum(S.cijena)} KM`:'💰 Cijena po dogovoru');
+  if(S.grad.trim())L.push(`📍 ${S.grad.trim()}`);if(S.tel.trim())L.push(`📞 ${S.tel.trim()}`);
+  L.push('','Pogledaj još oglasa i objavi svoj besplatno na autobih.ba','','#autobih #polovniautomobili #automobili #prodajaauta #bih #autooglasi');return L.join('\n')}
+const cap=document.getElementById('caption');
+function updateCaption(){if(!capEdited)cap.value=makeCaption()}
+cap.addEventListener('input',()=>{capEdited=true});
+
+/* događaji */
+const form=document.getElementById('form');
+function sync(){document.getElementById('qrrow').hidden=!S.qrOn}
+form.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(!k)return;
+  S[k]=e.target.type==='checkbox'?e.target.checked:(e.target.type==='range'?Number(e.target.value):e.target.value);sync();redraw()});
+document.getElementById('photo').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+  if(!/^image\//.test(f.type)){status('Odaberi sliku (JPG ili PNG).','warn');return}
+  const url=URL.createObjectURL(f),im=new Image();im.onload=()=>{IMG=im;URL.revokeObjectURL(url);S.zoom=1;S.fx=50;S.fy=50;['zoom','fx','fy'].forEach(id=>document.getElementById(id).value=S[id]);status('Slika je dodata.','ok');redraw()};
+  im.onerror=()=>{URL.revokeObjectURL(url);status('Slika se ne može otvoriti.','warn')};im.src=url});
+const status=(t,c)=>{const s=document.getElementById('status');s.textContent=t;s.className='status '+(c||'')};
+async function savePng(){
+  const dl=await (window.claude&&window.claude.use?window.claude.use('downloads'):null);
+  if(!dl){status('Preuzimanje nije dostupno u ovom prikazu. Otvori stranicu u pregledniku.','warn');return}
+  cv.toBlob(async blob=>{if(!blob){status('Greška pri pravljenju slike.','warn');return}
+    const nm=((S.naziv||'oglas').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,'-').replace(/^-|-$/g,'')||'oglas');
+    try{await dl.save({filename:`autobih-${nm}-${S.fmt==='916'?'story':S.fmt==='11'?'kvadrat':'objava'}.png`,data:blob});status('Slika je spremna.','ok')}
+    catch(e){status(e&&e.code==='declined'?'Preuzimanje je otkazano.':'Preuzimanje nije uspjelo. Pokušaj ponovo.','warn')}},'image/png')}
+document.addEventListener('click',async e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act;
+  if(act==='png')savePng();
+  if(act==='rmphoto'){IMG=null;document.getElementById('photo').value='';redraw();status('Slika je uklonjena.','')}
+  if(act==='resetcap'){capEdited=false;updateCaption();status('Opis je ponovo napravljen.','ok')}
+  if(act==='copycap'){try{await navigator.clipboard.writeText(cap.value);status('Opis je kopiran.','ok')}catch(err){cap.focus();cap.select();status('Opis je označen. Kopiraj ga ručno (Ctrl+C).','warn')}}});
+
+/* početak */
+sync();draw();
+if(document.fonts&&document.fonts.load){Promise.all([500,700,800].map(w=>document.fonts.load(`${w} 40px "Plus Jakarta Sans"`))).then(()=>draw()).catch(()=>{})}
+</script>
+
+</body></html>
